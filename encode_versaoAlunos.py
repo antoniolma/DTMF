@@ -37,15 +37,7 @@ tecla_por_freq = {
 
 teclas_validas = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "X", "#", "A", "B", "C", "D"]
 
-def gerar_senoides(freqs):
-    # Taxa de amostragem
-    taxa_amostragem = 44100
-    # Duração do áudio em segundos
-    duracao_audio_seg = 2
-    # Número total de amostras
-    num_amostras = int(taxa_amostragem * duracao_audio_seg)
-    # Lista de tempo
-    lista_tempo = np.linspace(0, duracao_audio_seg, num_amostras)
+def gerar_senoides(freqs, lista_tempo):
     senoide1 = []
     senoide2 = []
     
@@ -80,9 +72,18 @@ def main():
         else:
             print("Tecla inválida.")
     
+    # Taxa de amostragem
+    taxa_amostragem = 44100
+    # Duração do áudio em segundos
+    duracao_audio_seg = 2
+    # Número total de amostras
+    num_amostras = int(taxa_amostragem * duracao_audio_seg)
+    # Lista de tempo
+    lista_tempo = np.linspace(0, duracao_audio_seg, num_amostras)
+
     print("Gerando Tons base")
     # Gerar as senoides
-    signal = gerar_senoides(freqs)
+    signal = gerar_senoides(freqs, lista_tempo)
 
     print("Executando as senoides (emitindo o som)")
     print("Gerando Tom referente ao símbolo : {}".format(tecla))
@@ -90,10 +91,31 @@ def main():
     sd.play(signal, 44100)
     # aguarda fim do audio
     sd.wait()
-    print("Chegou ao fim")
-    #plotFFT(self, signal, taxa_amostragem)
+
+    amostras_plot = 1000  # número de amostras para plotar
+
     #Exibe gráficos
-    #plt.show() 
+    # Gráfico do sinal no domínio do tempo
+    plt.plot(lista_tempo[:amostras_plot], signal[:amostras_plot])
+    plt.title("Sinal x Tempo")
+    plt.xlabel("Tempo (s)")
+    plt.ylabel("Sinal")
+    # plt.grid(True)
+    plt.show() 
+
+    # Gráfico do sinal (transformada de Fourier) no domínio da frequência 
+    # Calcular a FFT do sinal
+    fft_result = np.fft.fft(signal)
+
+    # Calcular as frequências correspondentes
+    frequencias = np.fft.fftfreq(len(signal), 1/taxa_amostragem)
+
+    plt.plot(frequencias[:len(frequencias)//2], np.abs(fft_result[:len(frequencias)//2]))
+    plt.xlabel('Frequência (Hz)')
+    plt.ylabel('Magnitude')
+    plt.title('Espectro de Frequência')
+    # plt.grid(True)
+    plt.show()
 
 if __name__ == "__main__":
     main()

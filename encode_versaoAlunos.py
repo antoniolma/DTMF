@@ -1,4 +1,3 @@
-
 #importe as bibliotecas
 from suaBibSignal import *
 from math import *
@@ -95,13 +94,14 @@ def main():
     amostras_plot = 1000  # número de amostras para plotar
 
     #Exibe gráficos
+    plt.figure(figsize=(7,7))
     # Gráfico do sinal no domínio do tempo
+    plt.subplot(2, 1, 1)
     plt.plot(lista_tempo[:amostras_plot], signal[:amostras_plot])
     plt.title("Sinal x Tempo")
     plt.xlabel("Tempo (s)")
     plt.ylabel("Sinal")
     # plt.grid(True)
-    plt.show() 
 
     # Gráfico do sinal (transformada de Fourier) no domínio da frequência 
     # Calcular a FFT do sinal
@@ -110,12 +110,18 @@ def main():
     # Calcular as frequências correspondentes
     frequencias = np.fft.fftfreq(len(signal), 1/taxa_amostragem)
 
+    plt.subplot(2, 1, 2)
     plt.plot(frequencias[:len(frequencias)//2], np.abs(fft_result[:len(frequencias)//2]))
     plt.xlabel('Frequência (Hz)')
     plt.ylabel('Magnitude')
     plt.title('Espectro de Frequência')
     # plt.grid(True)
+
+    plt.tight_layout()
     plt.show()
+
+    print("Salvando em txt")
+    np.savetxt('sinal_gerado.txt', signal)
 
 if __name__ == "__main__":
     main()
